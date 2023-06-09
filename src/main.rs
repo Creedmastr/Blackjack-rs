@@ -7,8 +7,9 @@ use std::{io::stdin, process::exit};
 mod cards;
 mod game;
 mod ending;
+mod terminal;
 
-fn main() {
+fn main_loop() {
     let mut game = game::Game::init();
 
     game.show_cards();
@@ -18,6 +19,8 @@ fn main() {
     println!("\nWhat do YOU want to DO? REMEMBER: h for HELP.");
 
     game.inputing();
-    
-    println!("{:#?}", game.debug());
+}
+
+fn main() {
+    main_loop();
 }

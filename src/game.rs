@@ -145,7 +145,7 @@ impl Game {
     pub fn show_cards(&self) {
         let value = self.get_value();
         println!("Your CARDS are: {:#?}, and VALUE at: {}", self.format_cards(true), value.1);
-        println!("The DEALER first card is: {:#?}, and VALUE at: {}", self.dealer_cards[0].name, value.0);
+        println!("The DEALER first card is: {:#?}, and VALUE at: {}", self.dealer_cards[0].name, value.0 - self.dealer_cards[1].value);
     }
 
     pub fn inputing(&mut self) {
