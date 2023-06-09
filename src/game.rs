@@ -1,4 +1,4 @@
-use std::vec;
+use std::{vec, io::stdin, process::exit};
 
 use crate::{
     cards::Card,
@@ -90,12 +90,6 @@ impl Game {
                     .push(self.card_list[random.gen_range(0..self.card_list.len())]);
             }
         }
-
-        let values = self.get_value();
-
-        if values.1 > 21 {
-            losing(self.clone(), values);
-        }
     }
 
     pub fn get_value(&self) -> (u8, u8) {
@@ -125,40 +119,89 @@ impl Game {
     pub fn format_cards(&self, is_player: bool) -> String {
         let mut result = String::new();
 
-        let mut intermediate: Vec<String> = vec![];
-
         if !is_player {
             for i in self.dealer_cards.clone() {
-                intermediate.push(i.name.to_string());
+                result.push_str(&i.name.to_string());
+                result.push_str(", ");
             }
         } else {
             for i in self.player_cards.clone() {
-                intermediate.push(i.name.to_string());
+                result.push_str(&i.name.to_string());
+                result.push_str(", ");
             }
-        }
-
-        match intermediate.len() {
-            2 => {
-                result = format!("{}, {}", intermediate[0], intermediate[1]);
-            }
-
-            3 => {
-                result = format!(
-                    "{}, {}, {}",
-                    intermediate[0], intermediate[1], intermediate[2]
-                );
-            }
-
-            4 => {
-                result = format!(
-                    "{}, {}, {}, {}",
-                    intermediate[0], intermediate[1], intermediate[2], intermediate[3]
-                );
-            }
-
-            _ => {}
         }
 
         return result;
+    }
+
+    pub fn check(&self) {
+        let values = self.get_value();
+
+        if values.1 > 21 {
+            losing(self.clone(), values);
+        }
+    }
+
+    pub fn show_cards(&self) {
+        let value = self.get_value();
+        println!("Your CARDS are: {:#?}, and VALUE at: {}", self.format_cards(true), value.1);
+        println!("The DEALER first card is: {:#?}, and VALUE at: {}", self.dealer_cards[0].name, value.0);
+    }
+
+    pub fn inputing(&mut self) {
+        let mut input = String::new();
+        stdin().read_line(&mut input).expect("Couldn't read input");
+    
+        match input.trim() {
+            x if x == "a" => {
+                println!("Dealing ONE card
+                ");
+                self.deal(1, true);
+
+                self.show_cards();
+                print!("\n");
+
+                self.check();
+
+                println!("What NOW?");
+                self.inputing();
+            }
+    
+            x if x == "d" => {
+                println!("{:#?}", self.debug());
+            }
+    
+            x if x == "q" => {
+                exit(0);
+            }
+    
+            x if x == "h" => {
+                println!("HELP:
+                - a => deal another card,
+                - q => exit the game,
+                - f => final step, cards are revealed,
+                ");
+    
+                println!("What NOW?");
+                self.inputing();
+            }
+    
+            x if x == "f" => {
+                let values = self.get_value();
+    
+                if values.1 > 21 || values.0 > values.1 {
+                    losing(self.clone(), values);
+                }
+    
+                if values.1 > values.0 && values.1 <= 21 {
+                    winning(self.clone(), values);
+                }
+            }
+    
+            _ => {
+                println!("What NOW?");
+                self.inputing();
+            }
+        }
     }
 }
