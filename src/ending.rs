@@ -2,19 +2,19 @@ use std::{process::exit, io::stdout};
 
 use crate::{game::Game, terminal, main_loop};
 
-fn restart() {
+fn restart(game: &mut Game) {
     println!("Do YOU want to RESTART (y/n)?");
 
     let mut input = String::new();
     std::io::stdin().read_line(&mut input).expect("Couldn't read input");
     match input.trim() {
-        "y" => main_loop(),
+        "y" => main_loop(game),
 
         _ => exit(0)
     }
 }
 
-pub fn losing(game: &mut Game, values: (u8, u8)) {
+pub fn losing(game: &mut Game, values: (i8, i8)) {
     terminal::clear();
     game.chips -= game.betting;
 
@@ -23,16 +23,17 @@ pub fn losing(game: &mut Game, values: (u8, u8)) {
     println!("Dealer cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(false), values.0);
     println!("Your cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(true), values.1);
 
+    if game.chips <= 0 {
+        println!("You DON'T have ANY chips LEFT. \n So, the game is CONCLUDING");
+        exit(0)
+    }
+
     println!("You have now {} chips!", game.chips);
 
-
-
-    restart();
-
-    exit(0);
+    restart(game);
 }
 
-pub fn winning(game: &mut Game, values: (u8, u8)) {
+pub fn winning(game: &mut Game, values: (i8, i8)) {
     terminal::clear();
     game.chips += game.betting;
 
@@ -41,7 +42,5 @@ pub fn winning(game: &mut Game, values: (u8, u8)) {
     println!("Dealer cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(false), values.0);
     println!("Your cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(true), values.1);
 
-    restart();
-
-    exit(0);
+    restart(game);
 }

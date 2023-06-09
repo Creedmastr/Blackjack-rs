@@ -11,8 +11,8 @@ pub struct Game {
     pub dealer_cards: Vec<Card>,
     pub player_cards: Vec<Card>,
     pub card_list: Vec<Card>,
-    pub chips: u8,
-    pub betting: u8,
+    pub chips: i8,
+    pub betting: i8,
 }
 
 impl Default for Game {
@@ -20,7 +20,60 @@ impl Default for Game {
         Self {
             dealer_cards: vec![],
             player_cards: vec![],
-            card_list: vec![],
+            card_list: vec![
+                Card {
+                    name: &"ACE",
+                    value: 1,
+                },
+                Card {
+                    name: "TWO",
+                    value: 2,
+                },
+                Card {
+                    name: "THREE",
+                    value: 3,
+                },
+                Card {
+                    name: "FOUR",
+                    value: 4,
+                },
+                Card {
+                    name: "FIVE",
+                    value: 5,
+                },
+                Card {
+                    name: "SIX",
+                    value: 6,
+                },
+                Card {
+                    name: "SEVEN",
+                    value: 7,
+                },
+                Card {
+                    name: "EIGHT",
+                    value: 8,
+                },
+                Card {
+                    name: "NINE",
+                    value: 9,
+                },
+                Card {
+                    name: "TEN",
+                    value: 10,
+                },
+                Card {
+                    name: "JACK",
+                    value: 11,
+                },
+                Card {
+                    name: "QUEEN",
+                    value: 12,
+                },
+                Card {
+                    name: "KING",
+                    value: 13,
+                },
+            ],
             chips: 50,
             betting: 3,
         }
@@ -28,74 +81,15 @@ impl Default for Game {
 }
 
 impl Game {
-    pub fn init(&self) -> Self {
-        let mut result = Game::default();
+    pub fn init(&mut self) {
+        self.deal(3, false);
+        self.deal(2, true);
 
-        result.card_list = vec![
-            Card {
-                name: &"ACE",
-                value: 1,
-            },
-            Card {
-                name: "TWO",
-                value: 2,
-            },
-            Card {
-                name: "THREE",
-                value: 3,
-            },
-            Card {
-                name: "FOUR",
-                value: 4,
-            },
-            Card {
-                name: "FIVE",
-                value: 5,
-            },
-            Card {
-                name: "SIX",
-                value: 6,
-            },
-            Card {
-                name: "SEVEN",
-                value: 7,
-            },
-            Card {
-                name: "EIGHT",
-                value: 8,
-            },
-            Card {
-                name: "NINE",
-                value: 9,
-            },
-            Card {
-                name: "TEN",
-                value: 10,
-            },
-            Card {
-                name: "JACK",
-                value: 11,
-            },
-            Card {
-                name: "QUEEN",
-                value: 12,
-            },
-            Card {
-                name: "KING",
-                value: 13,
-            },
-        ];
-
-        result.deal(3, true);
-        result.deal(2, false);
-
-        result.chips = self.chips;
-        result.betting = self.betting;
-
-        return result;
+        self.chips = self.chips;
+        self.betting = self.betting;
     }
 
-    pub fn deal(&mut self, nb_cards: u8, is_player: bool) {
+    pub fn deal(&mut self, nb_cards: i8, is_player: bool) {
         let mut random = rand::thread_rng();
 
         for i in 0..nb_cards {
@@ -109,7 +103,7 @@ impl Game {
         }
     }
 
-    pub fn get_value(&self) -> (u8, u8) {
+    pub fn get_value(&self) -> (i8, i8) {
         let mut result = (0, 0);
 
         for card in self.dealer_cards.clone() {

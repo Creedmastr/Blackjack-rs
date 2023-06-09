@@ -1,5 +1,5 @@
 #[derive(Clone, Copy, Debug)]
 pub struct Card {
     pub name: &'static str,
-    pub value: u8,
+    pub value: i8,
 }

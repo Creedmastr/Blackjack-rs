@@ -1,6 +1,7 @@
 #![allow(unused_imports, unused_variables)]
 
 use cards::Card;
+use game::Game;
 use rand;
 use std::{io::stdin, process::exit};
 
@@ -9,8 +10,8 @@ mod game;
 mod ending;
 mod terminal;
 
-fn main_loop() {
-    let mut game = game::Game::default().init();
+fn main_loop(game: &mut Game) {
+    game.init();
 
     game.show_cards();
 
@@ -22,5 +23,7 @@ fn main_loop() {
 }
 
 fn main() {
-    main_loop();
+    let mut game = game::Game::default();
+
+    main_loop(&mut game);
 }
