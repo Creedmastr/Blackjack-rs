@@ -22,6 +22,8 @@ pub fn losing(game: Game, values: (u8, u8)) {
     println!("Dealer cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(false), values.0);
     println!("Your cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(true), values.1);
 
+    restart();
+
     exit(0);
 }
 
@@ -32,6 +34,8 @@ pub fn winning(game: Game, values: (u8, u8)) {
 
     println!("Dealer cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(false), values.0);
     println!("Your cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(true), values.1);
+
+    restart();
 
     exit(0);
 }
