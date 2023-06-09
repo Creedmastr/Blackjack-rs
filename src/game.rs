@@ -1,4 +1,4 @@
-use std::{vec, io::stdin, process::exit};
+use std::{io::stdin, process::exit, vec};
 
 use crate::{
     cards::Card,
@@ -6,15 +6,29 @@ use crate::{
 };
 use rand::{self, Rng};
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct Game {
     pub dealer_cards: Vec<Card>,
     pub player_cards: Vec<Card>,
     pub card_list: Vec<Card>,
+    pub chips: u8,
+    pub betting: u8,
+}
+
+impl Default for Game {
+    fn default() -> Self {
+        Self {
+            dealer_cards: vec![],
+            player_cards: vec![],
+            card_list: vec![],
+            chips: 50,
+            betting: 3,
+        }
+    }
 }
 
 impl Game {
-    pub fn init() -> Self {
+    pub fn init(&self) -> Self {
         let mut result = Game::default();
 
         result.card_list = vec![
@@ -72,8 +86,11 @@ impl Game {
             },
         ];
 
-        result.deal(2, true);
+        result.deal(3, true);
         result.deal(2, false);
+
+        result.chips = self.chips;
+        result.betting = self.betting;
 
         return result;
     }
@@ -111,6 +128,8 @@ impl Game {
             dealer_cards: self.dealer_cards.clone(),
             player_cards: self.player_cards.clone(),
             card_list: vec![],
+            chips: self.chips,
+            betting: self.betting,
         };
 
         return result;
@@ -134,28 +153,43 @@ impl Game {
         return result;
     }
 
-    pub fn check(&self) {
+    pub fn check(&mut self) {
         let values = self.get_value();
 
         if values.1 > 21 {
-            losing(self.clone(), values);
+            losing(self, values);
         }
     }
 
     pub fn show_cards(&self) {
         let value = self.get_value();
-        println!("Your CARDS are: {:#?}, and VALUE at: {}", self.format_cards(true), value.1);
-        println!("The DEALER first card is: {:#?}, and VALUE at: {}", self.dealer_cards[0].name, value.0 - self.dealer_cards[1].value);
+        println!(
+            "Your CARDS are: {:#?}, and VALUE at: {}",
+            self.format_cards(true),
+            value.1
+        );
+        println!(
+            "The DEALER first card is: {:#?}, and VALUE at: {}\n",
+            self.dealer_cards[0].name,
+            value.0 - self.dealer_cards[1].value
+        );
+
+        println!(
+            "You have {} chips, and are currently BETTING {}",
+            self.chips, self.betting
+        );
     }
 
-    pub fn inputing(&mut self) {
+    pub fn menu(&mut self) {
         let mut input = String::new();
         stdin().read_line(&mut input).expect("Couldn't read input");
-    
+
         match input.trim() {
             x if x == "a" => {
-                println!("Dealing ONE card
-                ");
+                println!(
+                    "Dealing ONE card
+                "
+                );
                 self.deal(1, true);
 
                 self.show_cards();
@@ -164,43 +198,56 @@ impl Game {
                 self.check();
 
                 println!("What NOW?");
-                self.inputing();
+                self.menu();
             }
-    
+
+            x if x.starts_with("b") => {
+                let splitted = x.split_whitespace().collect::<Vec<&str>>();
+
+                if splitted.len() >= 2 {
+                    self.betting = splitted[1].parse().unwrap();
+                }
+
+                self.menu();
+            }
+
             x if x == "d" => {
                 println!("{:#?}", self.debug());
             }
-    
+
             x if x == "q" => {
                 exit(0);
             }
-    
+
             x if x == "h" => {
-                println!("HELP:
+                println!(
+                    "HELP:
                 - a => deal another card,
                 - q => exit the game,
                 - f => final step, cards are revealed,
-                ");
-    
+                - b X => betting X amount (the default is 3),
+                "
+                );
+
                 println!("What NOW?");
-                self.inputing();
+                self.menu();
             }
-    
+
             x if x == "f" => {
                 let values = self.get_value();
-    
+
                 if values.1 > 21 || values.0 > values.1 {
-                    losing(self.clone(), values);
+                    losing(self, values);
                 }
-    
+
                 if values.1 > values.0 && values.1 <= 21 {
-                    winning(self.clone(), values);
+                    winning(self, values);
                 }
             }
-    
+
             _ => {
                 println!("What NOW?");
-                self.inputing();
+                self.menu();
             }
         }
     }

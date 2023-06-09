@@ -10,7 +10,7 @@ mod ending;
 mod terminal;
 
 fn main_loop() {
-    let mut game = game::Game::init();
+    let mut game = game::Game::default().init();
 
     game.show_cards();
 
@@ -18,7 +18,7 @@ fn main_loop() {
 
     println!("\nWhat do YOU want to DO? REMEMBER: h for HELP.");
 
-    game.inputing();
+    game.menu();
 }
 
 fn main() {

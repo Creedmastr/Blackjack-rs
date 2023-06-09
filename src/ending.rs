@@ -14,23 +14,29 @@ fn restart() {
     }
 }
 
-pub fn losing(game: Game, values: (u8, u8)) {
+pub fn losing(game: &mut Game, values: (u8, u8)) {
     terminal::clear();
+    game.chips -= game.betting;
 
-    println!("You have LOST!");
+    println!("You have LOST this round, and LOST {} chips!", game.betting);
 
     println!("Dealer cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(false), values.0);
     println!("Your cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(true), values.1);
+
+    println!("You have now {} chips!", game.chips);
+
+
 
     restart();
 
     exit(0);
 }
 
-pub fn winning(game: Game, values: (u8, u8)) {
+pub fn winning(game: &mut Game, values: (u8, u8)) {
     terminal::clear();
+    game.chips += game.betting;
 
-    println!("You have WON!");
+    println!("You have WON this round, and WON {} chips!", game.betting);
 
     println!("Dealer cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(false), values.0);
     println!("Your cards: {:#?}, and their VALUE is: {:#?}", game.format_cards(true), values.1);
