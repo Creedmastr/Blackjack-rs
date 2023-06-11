@@ -14,7 +14,7 @@ fn main_loop(game: &mut Game) {
     game.init();
 
     game.show_cards();
-
+    
     game.check(); // Checks if you have already lost
 
     println!("\nWhat do YOU want to DO? REMEMBER: h for HELP.");
