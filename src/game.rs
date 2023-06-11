@@ -117,18 +117,6 @@ impl Game {
         return result;
     }
 
-    pub fn debug(&self) -> Self {
-        let result = Game {
-            dealer_cards: self.dealer_cards.clone(),
-            player_cards: self.player_cards.clone(),
-            card_list: vec![],
-            chips: self.chips,
-            betting: self.betting,
-        };
-
-        return result;
-    }
-
     pub fn format_cards(&self, is_player: bool) -> String {
         let mut result = String::new();
 
@@ -203,10 +191,6 @@ impl Game {
                 }
 
                 self.menu();
-            }
-
-            x if x == "d" => {
-                println!("{:#?}", self.debug());
             }
 
             x if x == "q" => {
