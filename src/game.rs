@@ -165,7 +165,7 @@ impl Game {
         println!(
             "The DEALER first card is: {:#?}, and VALUE at: {}\n",
             self.dealer_cards[0].name,
-            value.0 - self.dealer_cards[1].value
+            self.dealer_cards[0].value
         );
 
         println!(
